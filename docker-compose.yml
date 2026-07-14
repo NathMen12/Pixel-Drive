@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: npm run dev
+    ports:
+      - "7860:7860"
+    environment:
+      - NODE_ENV=development
+      - PORT=7860
+      - JWT_SECRET=${JWT_SECRET}
+      - APP_URL=http://localhost:7860
+      - IMGBB_API_KEY=${IMGBB_API_KEY}
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=pixeldrive
+      - DB_CA_CERT=
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - pixeldrive-network
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=pixeldrive
+      - MYSQL_USER=pixeldrive
+      - MYSQL_PASSWORD=pixeldrive
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pixeldrive-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=rootpassword
+    depends_on:
+      - mysql
+    networks:
+      - pixeldrive-network
+
+volumes:
+  mysql-data:
+
+networks:
+  pixeldrive-network:
+    driver: bridge
