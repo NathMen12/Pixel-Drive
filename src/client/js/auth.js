@@ -89,3 +89,8 @@ export const authManager = {
     return !!store.getUser();
   },
 };
+
+// Export initAuth function for main.js compatibility
+export async function initAuth() {
+  return authManager.init();
+}
