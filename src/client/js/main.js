@@ -1,5 +1,5 @@
 import { initRouter } from './router.js';
-import { initStore } from './store.js';
+import { store } from './store.js';
 import { initAuth } from './auth.js';
 import { initTheme } from './theme.js';
 import { registerComponents } from './components/index.js';
@@ -17,8 +17,8 @@ async function initApp() {
     // Initialize theme first (before rendering)
     initTheme();
 
-    // Initialize store (reactive state)
-    const store = initStore();
+    // Initialize store (reactive state) - already instantiated
+    // const store = initStore();
 
     // Register custom elements
     registerComponents();
