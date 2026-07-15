@@ -57,3 +57,6 @@ export {
   RenameModal,
   ContextMenu,
 };
+
+// Alias for main.js compatibility
+export { defineCustomElements as registerComponents };
