@@ -14,17 +14,8 @@ async function migrate() {
     const schemaPath = path.join(__dirname, 'schema.sql');
     const schema = fs.readFileSync(schemaPath, 'utf-8');
 
-    // Split by semicolon, but be careful with semicolons inside strings
-    const statements = schema
-      .split(';')
-      .map(s => s.trim())
-      .filter(s => s.length > 0 && !s.startsWith('--'));
-
-    for (const statement of statements) {
-      if (statement.trim()) {
-        await pool.execute(statement);
-      }
-    }
+    // Execute the entire schema at once (pool has multipleStatements: true)
+    await pool.query(schema);
 
     console.log('✅ Migrations completed successfully');
   } catch (error) {
