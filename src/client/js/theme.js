@@ -59,3 +59,8 @@ export const themeManager = {
 if (typeof window !== 'undefined') {
   themeManager.init();
 }
+
+// Export function for main.js compatibility
+export function initTheme() {
+  themeManager.init();
+}
